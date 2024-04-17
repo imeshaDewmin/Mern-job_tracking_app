@@ -5,6 +5,9 @@ const app = express();
 import morgan from "morgan";
 import mongoose from 'mongoose';
 
+import { validateTest } from './middleware/validationMiddleware.js';
+
+
 //Routers
 import jobRouter from './routes/jobRouter.js';
 
@@ -18,8 +21,14 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 
-app.use('/api/v1/jobs', jobRouter);
+app.post('/api/v1/test',
+  validateTest,
+  (req, res) => {
+    const { name } = req.body;
+    res.json({ msg: `hello ${name}` });
+  });
 
+app.use('/api/v1/jobs', jobRouter);
 
 app.use('*', (req, res) => {
   res.status(404).json({ msg: 'not found' });
@@ -29,15 +38,15 @@ app.use(errorHandlerMiddleware);
 
 const port = process.env.PORT || 5100;
 
-try{
-await mongoose.connect(process.env.MONGO_URL)
-app.listen(port, () => {
-  console.log(`server running on PORT ${port}....`);
-});
+try {
+  await mongoose.connect(process.env.MONGO_URL)
+  app.listen(port, () => {
+    console.log(`server running on PORT ${port}....`);
+  });
 
-}catch(error){
-console.log(error);
-process.exit(1);
+} catch (error) {
+  console.log(error);
+  process.exit(1);
 }
 
 
