@@ -5,8 +5,6 @@ const app = express();
 import morgan from "morgan";
 import mongoose from 'mongoose';
 
-import { validateTest } from './middleware/validationMiddleware.js';
-
 
 //Routers
 import jobRouter from './routes/jobRouter.js';
@@ -20,13 +18,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use(express.json());
-
-app.post('/api/v1/test',
-  validateTest,
-  (req, res) => {
-    const { name } = req.body;
-    res.json({ msg: `hello ${name}` });
-  });
 
 app.use('/api/v1/jobs', jobRouter);
 
