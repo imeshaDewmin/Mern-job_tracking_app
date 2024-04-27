@@ -6,6 +6,21 @@ import { Form, useNavigation, redirect } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import customFetch from '../utils/customFetch';
 
+export const action = async ({ request }) => {
+  const formData = await request.formData();
+  const data = Object.fromEntries(formData);
+
+  try {
+    await customFetch.post('/jobs', data);
+    toast.success('Job created successfully')
+    return redirect('/dashboard/all-jobs');
+
+  } catch (error) {
+    toast.error(error?.response?.data?.msg);
+    return error;
+  }
+};
+
 
 const AddJob = () => {
   const { user } = useOutletContext();
@@ -27,7 +42,7 @@ const AddJob = () => {
             defaultValue={JOB_STATUS.PENDING}
             list={Object.values(JOB_STATUS)}
           />
-           <FormRowSelect
+          <FormRowSelect
             labelText='job type'
             name='jobType'
             defaultValue={JOB_TYPE.FULL_TIME}
