@@ -1,11 +1,13 @@
 import 'express-async-errors';
 import { StatusCodes } from 'http-status-codes';
 import Job from '../models/JobModel.js';
+import mongoose from 'mongoose';
+import day from 'dayjs';
 
 
 export const getAllJobs = async (req, res) => {
-    
-    const jobs = await Job.find({createdBy:req.user.userId})
+
+    const jobs = await Job.find({ createdBy: req.user.userId })
     res.status(StatusCodes.OK).json({ jobs })
 };
 
@@ -41,3 +43,26 @@ export const deleteJob = async (req, res) => {
 
     res.status(StatusCodes.OK).json({ msg: 'job deleted', job: removedJob });
 };
+
+export const showStats = async (req, res) => {
+    const defaultStats = {
+        pending: 22,
+        interview: 11,
+        declined: 4,
+    }
+    let monthlyApplications = [
+        {
+            date: 'May 23',
+            count: 12,
+        },
+        {
+            date: 'June 23',
+            count: 9,
+        },
+        {
+            date: 'July 23',
+            count: 3,
+        },
+    ]
+    res.status(StatusCodes.OK).json({ defaultStats, monthlyApplications });
+}
