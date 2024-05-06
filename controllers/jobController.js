@@ -6,8 +6,20 @@ import day from 'dayjs';
 
 
 export const getAllJobs = async (req, res) => {
+    const { search } = req.query
 
-    const jobs = await Job.find({ createdBy: req.user.userId })
+    const queryObject = {
+        createdBy: req.user.userId
+    };
+
+    if (search) {
+        queryObject.$or = [
+            { position: { $regex: search, $options: 'i' } },
+            { company: { $regex: search, $options: 'i' } }
+        ]
+    }
+
+    const jobs = await Job.find(queryObject)
     res.status(StatusCodes.OK).json({ jobs })
 };
 
