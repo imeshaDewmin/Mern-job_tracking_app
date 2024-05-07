@@ -15,7 +15,7 @@ export const loader = async ({ request }) => {
       params,
     });
     return {
-      data,
+      data, searchValues: { ...params }
     };
   } catch (error) {
     toast.error(error?.response?.data?.msg);
@@ -25,10 +25,10 @@ export const loader = async ({ request }) => {
 
 const AllJobsContext = createContext()
 const AllJobs = () => {
-  const { data } = useLoaderData();
+  const { data, searchValues } = useLoaderData();
 
   return (
-    <AllJobsContext.Provider value={{ data }} >
+    <AllJobsContext.Provider value={{ data, searchValues }} >
       <SearchContainer />
       <JobsContainer />
     </AllJobsContext.Provider>
